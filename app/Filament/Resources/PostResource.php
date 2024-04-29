@@ -45,7 +45,7 @@ class PostResource extends Resource
                     // unique() for unique data value if database have already = new data will be add 
                     // numeric() just for number
                     // https://filamentphp.com/docs/3.x/forms/validation go to website to all validation functions
-                    TextInput::make("title")->numeric(),
+                    TextInput::make("title"),
                     ColorPicker::make("color"),
                     TextInput::make("slug"),
                     Select::make("category_id")->options(Category::all()->pluck('slug', 'id')),
@@ -62,18 +62,23 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make("title"),
-                TextColumn::make("slug"),
+                TextColumn::make("id")->toggleable(isToggledHiddenByDefault:true),
+                TextColumn::make("title")->sortable()->searchable(),
+                TextColumn::make("slug")->searchable(),
                 TextColumn::make("category.slug"),
                 ColorColumn::make("color"),
                 ImageColumn::make("thumbnail"),
                 CheckboxColumn::make("published")->inline(false),
+                TextColumn::make("created_at")->label("Publised on")->date("Y M D"),
+                TextColumn::make("updated_at")->toggleable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(), 
+                Tables\Actions\DeleteAction::make(), 
+ 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
