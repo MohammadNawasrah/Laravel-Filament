@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\CategoryResource\RelationManagers\PostsRelationManager;
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Category;
@@ -48,7 +49,8 @@ class PostResource extends Resource
                     TextInput::make("title"),
                     ColorPicker::make("color"),
                     TextInput::make("slug"),
-                    Select::make("category_id")->options(Category::all()->pluck('slug', 'id')),
+                    Select::make("category_id")->label("Category")->relationship("category","slug")
+                    ->searchable(),
                     MarkdownEditor::make("content")->columnSpanFull(),
                 ])->collapsible(true),
 
@@ -90,7 +92,6 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 
