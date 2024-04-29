@@ -12,6 +12,7 @@ use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
@@ -39,15 +40,22 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make("title"),
-                ColorPicker::make("color"),
-                TextInput::make("slug"),
-                Select::make("category_id")->options(Category::all()->pluck('slug', 'id')),
+                Section::make([
+                    // tel() for phone number validation
+                    // unique() for unique data value if database have already = new data will be add 
+                    // numeric() just for number
+                    // https://filamentphp.com/docs/3.x/forms/validation go to website to all validation functions
+                    TextInput::make("title")->numeric(),
+                    ColorPicker::make("color"),
+                    TextInput::make("slug"),
+                    Select::make("category_id")->options(Category::all()->pluck('slug', 'id')),
+                    MarkdownEditor::make("content")->columnSpanFull(),
+                ])->collapsible(true),
+
+                FileUpload::make("thumbnail")->disk("public")->directory("thumbnails")->columnSpan(3),
                 TagsInput::make("tags"),
                 Toggle::make("published"),
-                FileUpload::make("thumbnail")->disk("public")->directory("thumbnails"),
-                MarkdownEditor::make("content"),
-            ]);
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
