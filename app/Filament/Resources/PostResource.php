@@ -41,7 +41,11 @@ class PostResource extends Resource
         return $form
             ->schema([
                 Section::make([
-                    TextInput::make("title"),
+                    // tel() for phone number validation
+                    // unique() for unique data value if database have already = new data will be add 
+                    // numeric() just for number
+                    // https://filamentphp.com/docs/3.x/forms/validation go to website to all validation functions
+                    TextInput::make("title")->numeric(),
                     ColorPicker::make("color"),
                     TextInput::make("slug"),
                     Select::make("category_id")->options(Category::all()->pluck('slug', 'id')),
