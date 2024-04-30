@@ -33,9 +33,10 @@ class UserResource extends Resource
                 TextInput::make("name")->required(),
                 TextInput::make("email")->email(),
                 Select::make("type")->options([
-                    "admin"=>"admin",
-                    "editor"=>"editor"
-                ]),
+                    User::ROLE_USER=>User::ROLE_USER,
+                    User::ROLE_ADMIN=>User::ROLE_ADMIN,
+                    User::ROLE_EDITOR=>User::ROLE_EDITOR,
+                ])->required(),
                 // readOnly use to let password without return it data from database
                 // visibleOn use to let input visible just on create user , when use update user 
                 // will be hidden

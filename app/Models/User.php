@@ -14,8 +14,9 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_EDITOR = 'editor';
+    public const ROLE_ADMIN = 'Admin';
+    public const ROLE_EDITOR = 'Editor';
+    public const ROLE_USER = 'User';
 
     public function canAccessPanel(Panel $panel):bool{
         return $this->type ==self::ROLE_ADMIN || $this->type ==self::ROLE_EDITOR ;
