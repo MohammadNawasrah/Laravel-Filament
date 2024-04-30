@@ -9,12 +9,14 @@ use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
@@ -26,7 +28,17 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make("name")->required(),
+                TextInput::make("name")->required()->live(onBlur: true)
+                // The variable name must not be changed. The order is not important.
+                ->afterStateUpdated(function (string $operation, string $state, Set $set) {
+                    if ($operation === "create") {
+                        $set("slug", Str::slug($state));
+                    }
+                    // if($operation==="edit"){
+                    //     dump("edit");
+                    // }
+                    // dump($state);
+                }),
                 TextInput::make("slug")->required()
             ]);
     }
