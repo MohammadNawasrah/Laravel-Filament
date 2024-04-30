@@ -22,6 +22,8 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    protected static ?string $navigationGroup="User";
+
     //  after heroicon-(o as outline or s as solid )-(svg icon name will be here)
     protected static ?string $navigationIcon = 'heroicon-o-users';
 

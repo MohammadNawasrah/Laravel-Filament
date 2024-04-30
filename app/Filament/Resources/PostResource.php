@@ -39,6 +39,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PostResource extends Resource
 {
+    protected static ?int $navigationSort = 1;
+
+
+    protected static ?string $navigationGroup="Blog";
+
     protected static ?string $model = Post::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';

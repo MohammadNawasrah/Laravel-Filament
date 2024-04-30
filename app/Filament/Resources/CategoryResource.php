@@ -20,6 +20,13 @@ use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
+    protected static ?string $navigationGroup="Blog";
+    // Must Navigqation Parent Item like label Parent
+    protected static ?string $navigationParentItem = "Posts";
+
+
+    protected static ?int $navigationSort = 2;
+    
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder-open';
