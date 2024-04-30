@@ -14,8 +14,11 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_EDITOR = 'editor';
+
     public function canAccessPanel(Panel $panel):bool{
-        return $this->email =="nawasrahmohammad2000@gmail.com";
+        return $this->type ==self::ROLE_ADMIN || $this->type ==self::ROLE_EDITOR ;
     }
 
     /**
@@ -27,6 +30,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        "type"
     ];
 
     /**
@@ -59,5 +63,12 @@ class User extends Authenticatable implements FilamentUser
     public function comments()
     {
         return $this->morphMany(Comment::class, "commentable");
+    }
+
+    public function isAdmin(){
+        return $this->type===self::ROLE_ADMIN;
+    }
+    public function isEditor(){
+        return $this->type===self::ROLE_EDITOR;
     }
 }
