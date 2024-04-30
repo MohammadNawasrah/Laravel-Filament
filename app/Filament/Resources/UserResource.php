@@ -33,9 +33,9 @@ class UserResource extends Resource
                 TextInput::make("name")->required(),
                 TextInput::make("email")->email(),
                 Select::make("type")->options([
-                    User::ROLE_USER=>User::ROLE_USER,
-                    User::ROLE_ADMIN=>User::ROLE_ADMIN,
-                    User::ROLE_EDITOR=>User::ROLE_EDITOR,
+                    User::ROLE_USER => User::ROLE_USER,
+                    User::ROLE_ADMIN => User::ROLE_ADMIN,
+                    User::ROLE_EDITOR => User::ROLE_EDITOR,
                 ])->required(),
                 // readOnly use to let password without return it data from database
                 // visibleOn use to let input visible just on create user , when use update user 
@@ -53,7 +53,13 @@ class UserResource extends Resource
                 TextColumn::make("id"),
                 TextColumn::make("name"),
                 TextColumn::make("email"),
-                TextColumn::make("type")
+                TextColumn::make("type")->badge()->color(
+                    function (string $state): string {
+                        if($state===User::ROLE_ADMIN) return "info";
+                        if($state===User::ROLE_EDITOR) return "success";
+                        return "";
+                    }
+                )
             ])
             ->filters([
                 //
@@ -70,8 +76,7 @@ class UserResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array
