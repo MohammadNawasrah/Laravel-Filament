@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable 
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -49,8 +49,12 @@ class User extends Authenticatable
         ];
     }
 
-    public function posts(){
-        return $this->belongsToMany(Post::class,"post_user")->withTimestamps();
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class, "post_user")->withTimestamps();
     }
- 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, "commentable");
+    }
 }

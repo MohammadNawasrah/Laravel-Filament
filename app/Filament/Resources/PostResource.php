@@ -6,9 +6,9 @@ use App\Filament\Resources\CategoryResource\RelationManagers\PostsRelationManage
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Filament\Resources\PostResource\RelationManagers\AuthorsRelationManager;
+use App\Filament\Resources\PostResource\RelationManagers\CommentsRelationManager;
 use App\Models\Category;
 use App\Models\Post;
-use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
@@ -30,6 +30,9 @@ use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -98,7 +101,32 @@ class PostResource extends Resource
                 TextColumn::make("updated_at")->toggleable(),
             ])
             ->filters([
-                //
+                // this is a commint {  
+                // Filter::make("Published Posts")->query(
+                //     function(Builder $query) :Builder{
+                //         return $query->where("published",true);
+                //     }
+                // ),
+                // Filter::make("Un Published Posts")->query(
+                //     function(Builder $query) :Builder{
+                //         return $query->where("published",false);
+                //     }
+                // ),
+                // this is a commint }
+
+
+                // important to use the column name you want to add filter on it 
+                // TernaryFilter class allows you to filter by column name with options: Yes, No, or All
+                TernaryFilter::make("Published"),
+
+
+                // important to use the column name you want to add filter on it 
+                // SelectFilter::make("category_id")->options(Category::all()->pluck("name","id"))
+                // ->multiple()
+
+                SelectFilter::make("category_id")->label("Category")->relationship("category", "slug")
+                    ->searchable()->preload()
+                // ->multiple()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -115,7 +143,8 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AuthorsRelationManager::class
+            AuthorsRelationManager::class,
+            CommentsRelationManager::class
         ];
     }
 
