@@ -113,3 +113,9 @@ Web app to create dynamic page desgin by using laravel.
 9.  make:filament-theme             Create a new Filament panel theme
 10.  make:filament-user              Create a new Filament user
 11.  make:filament-widget            Create a new Filament widget class
+
+
+## Settings install
+composer require outerweb/filament-settings
+
+doc URL :https://filamentphp.com/plugins/outerweb-settings 
