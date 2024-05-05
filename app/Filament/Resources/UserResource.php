@@ -8,6 +8,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Faker\Provider\ar_EG\Text;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,6 +22,8 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    protected static ?string $navigationGroup="User";
+
     //  after heroicon-(o as outline or s as solid )-(svg icon name will be here)
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -31,6 +34,11 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make("name")->required(),
                 TextInput::make("email")->email(),
+                Select::make("type")->options([
+                    User::ROLE_USER => User::ROLE_USER,
+                    User::ROLE_ADMIN => User::ROLE_ADMIN,
+                    User::ROLE_EDITOR => User::ROLE_EDITOR,
+                ])->required(),
                 // readOnly use to let password without return it data from database
                 // visibleOn use to let input visible just on create user , when use update user 
                 // will be hidden
@@ -46,7 +54,14 @@ class UserResource extends Resource
                 // !must be like data in database inside make function
                 TextColumn::make("id"),
                 TextColumn::make("name"),
-                TextColumn::make("email")
+                TextColumn::make("email"),
+                TextColumn::make("type")->badge()->color(
+                    function (string $state): string {
+                        if($state===User::ROLE_ADMIN) return "info";
+                        if($state===User::ROLE_EDITOR) return "success";
+                        return "";
+                    }
+                )
             ])
             ->filters([
                 //
@@ -63,8 +78,7 @@ class UserResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

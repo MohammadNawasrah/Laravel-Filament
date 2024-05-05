@@ -10,10 +10,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
+    public const ROLE_ADMIN = 'Admin';
+    public const ROLE_EDITOR = 'Editor';
+    public const ROLE_USER = 'User';
+
+    public function canAccessPanel(Panel $panel):bool{
+        return $this->type ==self::ROLE_ADMIN || $this->type ==self::ROLE_EDITOR ;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +31,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        "type"
     ];
 
     /**
@@ -56,5 +64,12 @@ class User extends Authenticatable
     public function comments()
     {
         return $this->morphMany(Comment::class, "commentable");
+    }
+
+    public function isAdmin(){
+        return $this->type===self::ROLE_ADMIN;
+    }
+    public function isEditor(){
+        return $this->type===self::ROLE_EDITOR;
     }
 }
