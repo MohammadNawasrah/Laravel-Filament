@@ -40,9 +40,10 @@ class UserResource extends Resource
                     User::ROLE_EDITOR => User::ROLE_EDITOR,
                 ])->required(),
                 // readOnly use to let password without return it data from database
-                // visibleOn use to let input visible just on create user , when use update user 
+                // visibleOn use to let input visible just on create user , when use update user
                 // will be hidden
-                TextInput::make("password")->password()->visibleOn("create")
+                auth()->user()->type==User::ROLE_ADMIN?
+                TextInput::make("password")->password()->visibleOn("create"):TextInput::make("password")->visible(false)
             ]);
     }
 

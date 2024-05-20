@@ -3,7 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Settings as S;
-
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -13,6 +13,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Gate;
 
 class settings extends Page implements HasForms
 {
@@ -24,9 +25,17 @@ class settings extends Page implements HasForms
     protected static string $view = 'filament.pages.settings';
     public static ?string $title = 'Settings';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return User::permissions("settings", "view");
+    }
 
     public function mount(\App\Models\Setting $settings): void
     {
+        if (!User::permissions("settings", "view")) {
+            abort(403);
+        }
+
         try {
             $settings = $settings->orderBy('order_data')->get();
 
@@ -67,7 +76,6 @@ class settings extends Page implements HasForms
                 ->schema($arrayOfInputs)->statePath('data');
         } catch (\Throwable $th) {
             dd($th);
-
         }
     }
 
@@ -95,7 +103,6 @@ class settings extends Page implements HasForms
         } catch (\Throwable $th) {
             Notification::make()->warning()->title('No Data Found')->send();
             dd($th);
-
         }
     }
 }

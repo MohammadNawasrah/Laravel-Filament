@@ -2,20 +2,30 @@
 
 namespace App\Policies;
 
-use App\Models\Category;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
-class CategoryPolicy
+class GenericPolicy
 {
-    protected const PAGE_NAME=("Category");
+    use HandlesAuthorization;
+    public  $pageName = "";
 
+    public function before($user, $ability, $model)
+    {
+        // dd($ability);
+        if(gettype($model)!=="string")
+        $model = get_class($model);
+        $modelNameArray = explode('\\', $model);
+        $modelName = end($modelNameArray);
+        // dd($modelName);
+        $this->pageName = strtolower($modelName);
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return User::permissions(self::PAGE_NAME,"view");
+        return User::permissions($this->pageName, "view")||$user->isAdmin();
     }
 
     /**
@@ -23,7 +33,7 @@ class CategoryPolicy
      */
     public function view(User $user): bool
     {
-        return User::permissions(self::PAGE_NAME,"view");
+        return User::permissions($this->pageName, "view")||$user->isAdmin();
     }
 
     /**
@@ -31,7 +41,7 @@ class CategoryPolicy
      */
     public function create(User $user): bool
     {
-        return User::permissions(self::PAGE_NAME,"create");
+        return User::permissions($this->pageName, "create")||$user->isAdmin();
     }
 
     /**
@@ -39,8 +49,8 @@ class CategoryPolicy
      */
     public function update(User $user): bool
     {
-        return User::permissions(self::PAGE_NAME,"update");
 
+        return User::permissions($this->pageName, "update")||$user->isAdmin();
     }
 
     /**
@@ -48,8 +58,7 @@ class CategoryPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return User::permissions(self::PAGE_NAME,"nawasrah");
-
+        return User::permissions($this->pageName, "delete")||$user->isAdmin();
     }
 
     /**

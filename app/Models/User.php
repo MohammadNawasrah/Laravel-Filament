@@ -72,4 +72,22 @@ class User extends Authenticatable implements FilamentUser
     public function isEditor(){
         return $this->type===self::ROLE_EDITOR;
     }
+
+    public static function permissions($pageName,$actionName){
+        $userId = auth()->user()->id;
+        $permissions = UserPermission::where('user_id', $userId)->get();
+        // Group permissions by page_name
+        $groupedPermissions = $permissions->groupBy('page_name');
+
+        // Check if the page name exists in the grouped permissions
+        if (!isset($groupedPermissions[strtolower($pageName)])) {
+            return false;
+        }
+
+        // Get the actions for the specified page name
+        $actions = $groupedPermissions[strtolower($pageName)]->pluck('actions')->flatten();
+
+        // Check if the action exists in the actions list
+        return $actions->contains($actionName);
+    }
 }
