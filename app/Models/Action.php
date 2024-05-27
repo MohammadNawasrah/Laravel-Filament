@@ -11,5 +11,9 @@ class Action extends Model
     protected $fillable = [
         "name",
         "slug",
+        "pages_name"
+    ];
+    protected $casts = [
+        "pages_name" => "array"
     ];
 }

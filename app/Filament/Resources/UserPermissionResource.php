@@ -53,11 +53,25 @@ class UserPermissionResource extends Resource
             ->schema([
                 Select::make('user_id')->relationship("user", "email")
                     ->searchable()->preload()->required(),
-                Select::make("actions")->options(Action::all()->pluck('slug', 'slug'))
+                Select::make("page_name")
+                    ->options(self::getAllFilesInDirectory())
+                    ->required()->searchable()->preload()
+                    ->reactive()
+                    ->afterStateUpdated(fn ($state, $set) => $set('actions', [])),
+                Select::make("actions")->options(function ($get) {
+                    $pageName = $get('page_name');
+                    if (empty($pageName)) {
+                        return [];
+                    }
+
+                    $actions = Action::query()->whereNull('pages_name')
+                    ->orWhereJsonLength('pages_name', '=', 0)
+                    ->orWhereJsonContains('pages_name', $pageName)
+                        ->pluck('slug', 'slug');
+
+                    return $actions->toArray();
+                })
                     ->searchable()->preload()->required()->multiple(),
-                Select::make("page_name")->options(self::getAllFilesInDirectory())
-                    ->required()->searchable()
-                    ->preload(),
             ]);
     }
 
